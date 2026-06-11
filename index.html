@@ -7544,7 +7544,7 @@ overfit by construction. The out-of-sample window is the only honest scorecard.<
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [1]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [9]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
@@ -7583,7 +7583,7 @@ unadjusted prices ignore dividends, which understates buy-and-hold by roughly
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [2]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [10]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">prices</span> <span class="o">=</span> <span class="n">bc</span><span class="o">.</span><span class="n">load_prices</span><span class="p">(</span><span class="s2">"SPY"</span><span class="p">,</span> <span class="n">start</span><span class="o">=</span><span class="s2">"2000-01-01"</span><span class="p">,</span> <span class="n">cache_path</span><span class="o">=</span><span class="s2">"spy_prices.csv"</span><span class="p">)</span>
@@ -7659,7 +7659,7 @@ The out-of-sample data plays no role in this choice.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [3]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [11]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">FAST_GRID</span> <span class="o">=</span> <span class="p">[</span><span class="mi">20</span><span class="p">,</span> <span class="mi">50</span><span class="p">,</span> <span class="mi">100</span><span class="p">]</span>
@@ -7677,7 +7677,7 @@ The out-of-sample data plays no role in this choice.</p>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[3]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[11]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -7817,7 +7817,7 @@ The out-of-sample data plays no role in this choice.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [4]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [12]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">best</span> <span class="o">=</span> <span class="n">grid</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
@@ -7874,7 +7874,7 @@ exactly why the next section, not this one, is the result that counts.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [5]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [13]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">pos_oos</span> <span class="o">=</span> <span class="n">bc</span><span class="o">.</span><span class="n">ma_crossover_positions</span><span class="p">(</span><span class="n">out_sample</span><span class="p">,</span> <span class="n">FAST</span><span class="p">,</span> <span class="n">SLOW</span><span class="p">)</span>
@@ -7892,7 +7892,7 @@ exactly why the next section, not this one, is the result that counts.</p>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[5]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[13]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -7949,7 +7949,7 @@ exactly why the next section, not this one, is the result that counts.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [6]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [14]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">equity</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">+</span> <span class="n">results_oos</span><span class="p">)</span><span class="o">.</span><span class="n">cumprod</span><span class="p">()</span>
@@ -7989,7 +7989,7 @@ exactly why the next section, not this one, is the result that counts.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [7]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [15]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="c1"># How often does the strategy actually trade, and when is it in the market?</span>
@@ -8035,7 +8035,7 @@ survives contact with unseen data.</p>
 <div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
 </div>
 <div class="jp-InputArea jp-Cell-inputArea">
-<div class="jp-InputPrompt jp-InputArea-prompt">In [8]:</div>
+<div class="jp-InputPrompt jp-InputArea-prompt">In [16]:</div>
 <div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor" data-type="inline">
 <div class="cm-editor cm-s-jupyter">
 <div class="highlight hl-ipython3"><pre><span></span><span class="n">pos_ins</span> <span class="o">=</span> <span class="n">bc</span><span class="o">.</span><span class="n">ma_crossover_positions</span><span class="p">(</span><span class="n">in_sample</span><span class="p">,</span> <span class="n">FAST</span><span class="p">,</span> <span class="n">SLOW</span><span class="p">)</span>
@@ -8057,7 +8057,7 @@ survives contact with unseen data.</p>
 </div>
 <div class="jp-OutputArea jp-Cell-outputArea">
 <div class="jp-OutputArea-child jp-OutputArea-executeResult">
-<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[8]:</div>
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[16]:</div>
 <div class="jp-RenderedHTMLCommon jp-RenderedHTML jp-OutputArea-output jp-OutputArea-executeResult" data-mime-type="text/html" tabindex="0">
 <div>
 <style scoped="">
@@ -8131,36 +8131,41 @@ survives contact with unseen data.</p>
 </div>
 <div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
 </div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput" data-mime-type="text/markdown">
-<h2 id="6.-Conclusions-%E2%80%94-written-after-looking-at-the-numbers-above">6. Conclusions — written after looking at the numbers above<a class="anchor-link" href="#6.-Conclusions-%E2%80%94-written-after-looking-at-the-numbers-above">¶</a></h2><p><em>(Re-run the notebook, then make sure each claim below matches your actual
-output table. Edit if your numbers tell a different story.)</em></p>
-<ol>
-<li><p><strong>Risk reduction is the real story.</strong> Trend-following rules like this one
-historically earn their keep not by out-returning the index but by cutting
-volatility and maximum drawdown — the strategy sidesteps part of the worst
-bear markets by going to cash. Check whether the out-of-sample max drawdown
-is meaningfully shallower than buy-and-hold's.</p>
+<h2 id="6.-Conclusions">6. Conclusions<a class="anchor-link" href="#6.-Conclusions">¶</a></h2><ol>
+<li><p><strong>The promised risk reduction did not materialize out of sample.</strong> In sample,
+the rule cut max drawdown dramatically (-19% vs -55%). Out of sample, drawdowns
+were identical (-33.7%): the COVID crash of March 2020 was too fast for a
+200 day average to react, so the strategy absorbed the fall, exited near the
+bottom, and then missed part of the rebound. Volatility was lower (15.6% vs
+19.2%), but the headline protection failed exactly when it was needed.</p>
 </li>
-<li><p><strong>Raw return usually loses.</strong> In strong bull markets the rule lags, because
-every whipsaw (a crossover that reverses quickly) pays costs and misses
-rebound days. If the out-of-sample CAGR trails buy-and-hold, that is the
-expected, honest result — not a failure of the analysis.</p>
+<li><p><strong>Raw return lost, as expected.</strong> The strategy returned 8.4% CAGR vs 14.2% for
+buy and hold, with a lower Sharpe (0.60 vs 0.79). In strong bull markets, the
+rule lags, because every whipsaw (a crossover that reverses quickly) pays
+costs and misses rebound days. This is the honest, expected result, not a
+failure of the analysis.</p>
 </li>
-<li><p><strong>The in-sample edge shrinks out-of-sample.</strong> Some of what the grid search
-"found" was noise. The gap between the two columns in Section 5 is a direct
-measurement of that overfitting.</p>
+<li><p><strong>The in sample edge shrank out of sample.</strong> In sample, the strategy beat
+buy and hold on every metric (Sharpe 0.74 vs 0.37); out of sample it beat it
+on none except volatility. Some of what the grid search "found" was noise,
+and the gap between the two windows in Section 5 is a direct measurement of
+that overfitting.</p>
 </li>
 </ol>
 <h3 id="Limitations-I-would-address-next">Limitations I would address next<a class="anchor-link" href="#Limitations-I-would-address-next">¶</a></h3><ul>
 <li><strong>Risk-free rate = 0</strong> in the Sharpe ratio; with cash earning ~4-5%, time
 spent out of the market should be credited, which would help the strategy.</li>
-<li><strong>Single asset, single regime.</strong> One index, one 25-year window. A serious
+<li><strong>Single asset, single regime.</strong> One index, one 26 year window. A serious
 test would span multiple assets and decades.</li>
-<li><strong>No execution realism.</strong> Fills at the close, fixed 5 bps cost, no taxes —
+<li><strong>No execution realism.</strong> Fills at the close, fixed 5 bps cost, no taxes,
 taxes alone could erase the edge for a taxable investor.</li>
 </ul>
 <h3 id="What-I-learned">What I learned<a class="anchor-link" href="#What-I-learned">¶</a></h3><p>Building this taught me more about <em>why</em> most backtests are wrong than about
-this particular strategy: lookahead bias, cost drag, and in-sample selection
-each silently flatter results, and each had to be explicitly engineered away.</p>
+this particular strategy: lookahead bias, cost drag, and in sample selection
+Each silently flatter results, and each had to be explicitly engineered away.
+The headline finding, that the strategy's main selling point failed in the one
+crash it faced out of sample, only surfaced because the test was designed to
+let it fail.</p>
 </div>
 </div>
 </div>
