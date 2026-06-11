@@ -4,9 +4,7 @@ A backtest of the classic moving-average crossover ("golden cross") strategy on
 SPY, built to answer one question honestly: **after transaction costs, on data
 the strategy was never tuned on, does it beat just holding the index?**
 
-> **TL;DR (fill in after running):** Out-of-sample (2018–present), the strategy
-> returned X% CAGR with a Sharpe of X and a max drawdown of X%, vs X% / X / X%
-> for buy-and-hold. [One sentence: what this means.]
+> **TL;DR:** Out-of-sample (2018–2026), the 50/200 crossover returned 8.4% CAGR with a 0.60 Sharpe vs 14.2% and 0.79 for buy-and-hold, with identical max drawdowns (-33.7%). After costs, on unseen data, the strategy did not beat the index — and the in-sample vs out-of-sample gap directly measures how much of its apparent edge was overfitting.
 
 ## Why this project
 
