@@ -1,10 +1,12 @@
-# Does a Simple Trend-Following Strategy Beat Buy-and-Hold?
+# Does a Simple Trend Following Strategy Beat Buy and Hold?
 
 A backtest of the classic moving-average crossover ("golden cross") strategy on
 SPY, built to answer one question honestly: **after transaction costs, on data
 the strategy was never tuned on, does it beat just holding the index?**
 
-> **TL;DR:** Out-of-sample (2018–2026), the 50/200 crossover returned 8.4% CAGR with a 0.60 Sharpe vs 14.2% and 0.79 for buy-and-hold, with identical max drawdowns (-33.7%). After costs, on unseen data, the strategy did not beat the index — and the in-sample vs out-of-sample gap directly measures how much of its apparent edge was overfitting.
+**Live report:** https://matinnikoo.github.io/momentum-backtest/
+
+> **TL;DR:** Out of sample (2018–2026), the 50/200 crossover returned 8.4% CAGR with a 0.60 Sharpe vs 14.2% and 0.79 for buy and hold, with identical max drawdowns (-33.7%). After costs, on unseen data, the strategy did not beat the index, and the in-sample vs out of sample gap directly measures how much of its apparent edge was overfitting.
 
 ## Why this project
 
@@ -53,7 +55,7 @@ then Settings → Pages → deploy from branch → root. Your report will be liv
 ## Honest limitations
 
 - Sharpe assumes a 0% risk-free rate; crediting cash yields would help the strategy.
-- One asset, one historical window — results may not generalize.
+- One asset, one historical window, results may not generalize.
 - Fills at the close with a flat 5 bps cost; no taxes or slippage modeling.
 
 ## License
