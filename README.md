@@ -1,62 +1,51 @@
 # Does a Simple Trend Following Strategy Beat Buy and Hold?
 
-A backtest of the classic moving-average crossover ("golden cross") strategy on
-SPY, built to answer one question honestly: **after transaction costs, on data
-the strategy was never tuned on, does it beat just holding the index?**
+A backtest of the 50/200 day moving average crossover (the "golden cross") on SPY. I wanted to answer one question: after trading costs, on years the strategy was never tuned on, does it beat just holding the index?
 
 **Live report:** https://matinnikoo.github.io/momentum-backtest/
 
-> **TL;DR:** Out of sample (2018–2026), the 50/200 crossover returned 8.4% CAGR with a 0.60 Sharpe vs 14.2% and 0.79 for buy and hold, with identical max drawdowns (-33.7%). After costs, on unseen data, the strategy did not beat the index, and the in-sample vs out of sample gap directly measures how much of its apparent edge was overfitting.
+**Short answer:** no. From 2018 to 2026 the strategy returned 8.4% a year with a 0.60 Sharpe. Buy and hold returned 14.2% with a 0.79 Sharpe. Both had the same worst drawdown, 33.7%. It looked a lot better on the years I tuned it on, so a good chunk of the edge was overfitting.
 
-## Why this project
+## How I tried to keep it honest
 
-Most retail backtests are wrong in the same three ways. This one is built to
-avoid them, and the code shows how:
+A lot of backtests online make the same three mistakes, so I built this one to avoid them.
 
-1. **No lookahead bias** — signals computed from today's close are traded at
-   tomorrow's close (`.shift(1)` in `backtest_core.py`).
-2. **Transaction costs** — every position change pays 5 bps; nothing trades free.
-3. **Out-of-sample testing** — parameters are chosen on 2000–2017 only, then
-   judged once on 2018–present. The in-sample-vs-out-of-sample table directly
-   measures how much of the "edge" was overfitting.
+1. **No lookahead.** A signal from today's close gets traded at tomorrow's close (the `.shift(1)` in `backtest_core.py`).
+2. **Trading costs.** Every time the position changes it pays 5 bps.
+3. **Out of sample testing.** I picked the parameters using 2000 to 2017 only, then tested once on 2018 to now. Comparing the two periods shows how much of the edge was overfitting.
 
-## Repo contents
+## What's in the repo
 
 | File | What it is |
 |---|---|
-| `backtest.ipynb` | The full analysis: data, methodology, results, honest conclusions |
-| `backtest_core.py` | All strategy / cost / metrics logic, heavily commented |
-| `test_backtest.py` | Sanity tests (lookahead shift, cost math, known-answer check) |
+| `backtest.ipynb` | The full analysis, from the data to the results and conclusions |
+| `backtest_core.py` | The strategy, cost and metrics code, with comments |
+| `test_backtest.py` | Unit tests for the lookahead shift, the cost math and a known answer check |
+| `spy_prices.csv` | Cached SPY prices so runs are reproducible |
+| `index.html` | The notebook exported as a web page, which is the live report |
 | `requirements.txt` | Dependencies |
 
 ## Run it
 
 ```bash
 pip install -r requirements.txt
-python test_backtest.py        # verify the engine (runs offline)
+python test_backtest.py        # checks the engine, runs offline
 jupyter notebook backtest.ipynb
 ```
 
-The first run downloads ~25 years of SPY data via `yfinance` and caches it to
-`spy_prices.csv` so later runs are instant and reproducible.
+The first run downloads about 25 years of SPY data with `yfinance` and saves it to `spy_prices.csv`, so later runs are instant.
 
-## View it as a website
-
-The notebook exports to a standalone HTML page:
+To rebuild the live report from the notebook:
 
 ```bash
 jupyter nbconvert --to html backtest.ipynb --output index.html
 ```
 
-To publish free on **GitHub Pages**: commit `index.html` to the repo,
-then Settings → Pages → deploy from branch → root. Your report will be live at
-`https://<username>.github.io/<repo>/`.
+## Limitations
 
-## Honest limitations
-
-- Sharpe assumes a 0% risk-free rate; crediting cash yields would help the strategy.
-- One asset, one historical window, results may not generalize.
-- Fills at the close with a flat 5 bps cost; no taxes or slippage modeling.
+* Sharpe assumes a 0% risk free rate. Counting interest on cash would help the strategy a little.
+* It's one asset over one stretch of history, so the result might not hold elsewhere.
+* Trades fill at the close with a flat 5 bps cost. No taxes or slippage.
 
 ## License
 
