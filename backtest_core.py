@@ -1,20 +1,16 @@
 """
 backtest_core.py
-================
-Core logic for a moving-average crossover (trend-following / momentum) backtest.
 
-Everything the notebook uses lives here so it can be imported, tested,
-and reused. Read every function — interviewers will ask about these details.
+Core logic for the moving average crossover backtest. The notebook imports
+everything from here so it can be tested on its own.
 
-Key design decisions (and why):
-  1. NEXT-DAY EXECUTION: the signal computed from today's close is traded
-     at TOMORROW's close. Using today's close for both signal and execution
-     is lookahead bias — the #1 rookie backtesting error.
-  2. TRANSACTION COSTS: every position change pays a cost (default 5 bps
-     = 0.05% per side). Strategies that trade often die here.
-  3. TRAIN/TEST SPLIT: parameters are chosen on the in-sample window only,
-     then judged on out-of-sample data they never saw. Reporting in-sample
-     results as "performance" is overfitting.
+Three choices matter most:
+  1. Next day execution. A signal from today's close is traded at tomorrow's
+     close. Using today's close for both would be lookahead bias.
+  2. Trading costs. Every position change pays a cost, 5 bps (0.05%) per
+     side by default.
+  3. Train and test split. The windows are picked on the in sample years
+     only and then judged on years they never saw.
 """
 
 from __future__ import annotations
@@ -23,7 +19,7 @@ import os
 import numpy as np
 import pandas as pd
 
-TRADING_DAYS = 252  # convention: trading days per year, used to annualize
+TRADING_DAYS = 252  # trading days in a year, used to annualize
 
 
 # ----------------------------------------------------------------------------
@@ -37,19 +33,18 @@ def load_prices(
     """
     Load daily ADJUSTED closing prices for `ticker`.
 
-    Adjusted close matters: it folds dividends and splits back into the
-    price series. Backtesting SPY on unadjusted prices silently throws away
-    ~2% per year of dividend return and understates buy-and-hold.
+    Adjusted closes include dividends and splits. Without them buy and hold
+    loses about 2% a year of dividends and looks worse than it really was.
 
-    Caches to CSV so repeated runs don't hammer the data source and so
-    results are reproducible even if the API changes.
+    Saves to a CSV so repeat runs don't download again and the results stay
+    the same even if the data source changes.
     """
     if cache_path and os.path.exists(cache_path):
         s = pd.read_csv(cache_path, index_col=0, parse_dates=True).iloc[:, 0]
         s.name = ticker
         return s.astype(float)
 
-    import yfinance as yf  # imported here so tests can run without network
+    import yfinance as yf  # imported here so the tests run without internet
 
     df = yf.download(ticker, start=start, auto_adjust=True, progress=False)
     if df.empty:
@@ -57,7 +52,7 @@ def load_prices(
             f"No data returned for {ticker}. Check your connection or ticker."
         )
     close = df["Close"]
-    # yfinance sometimes returns a 1-column DataFrame; flatten to Series.
+    # yfinance sometimes returns a one column DataFrame, so flatten it
     if isinstance(close, pd.DataFrame):
         close = close.iloc[:, 0]
     close.name = ticker
@@ -74,21 +69,20 @@ def ma_crossover_positions(
     prices: pd.Series, fast: int, slow: int
 ) -> pd.Series:
     """
-    Long-only moving-average crossover.
+    Long only moving average crossover.
 
-    Position = 1 (fully invested) when the fast MA is above the slow MA,
-    else 0 (in cash). The classic 50/200 version is the "golden cross".
+    Position is 1 (fully invested) when the fast average is above the slow
+    one, otherwise 0 (cash). 50/200 is the classic "golden cross".
 
-    CRITICAL: the returned position is shifted by one day. The MA values
-    use today's close, so the earliest we could actually trade on that
-    information is tomorrow. `.shift(1)` enforces that.
+    The position is shifted by one day. The averages use today's close, so
+    the earliest you could trade on them is tomorrow.
     """
     if fast >= slow:
         raise ValueError("fast window must be smaller than slow window")
     fast_ma = prices.rolling(fast).mean()
     slow_ma = prices.rolling(slow).mean()
     raw_signal = (fast_ma > slow_ma).astype(float)
-    return raw_signal.shift(1).fillna(0.0)  # <-- no lookahead
+    return raw_signal.shift(1).fillna(0.0)  # trade tomorrow, not today
 
 
 def run_backtest(
@@ -97,19 +91,19 @@ def run_backtest(
     cost_bps: float = 5.0,
 ) -> pd.DataFrame:
     """
-    Turn a price series + daily positions into daily strategy returns.
+    Turn prices and daily positions into daily strategy returns.
 
-    cost_bps: one-way transaction cost in basis points (5 = 0.05%).
-    Charged on every unit of position change (|Δposition|), so a full
-    round trip (0 -> 1 -> 0) costs 2 * cost_bps.
+    cost_bps is the one way cost in basis points (5 = 0.05%). It's charged on
+    every change in position, so a full round trip (0 to 1 to 0) costs
+    2 * cost_bps.
 
-    Returns a DataFrame with daily returns for the strategy and buy-&-hold.
+    Returns daily returns for the strategy and for buy and hold.
     """
     daily_ret = prices.pct_change().fillna(0.0)
 
     gross = positions * daily_ret                      # return while invested
     turnover = positions.diff().abs().fillna(0.0)      # position changes
-    costs = turnover * (cost_bps / 10_000.0)           # bps -> decimal
+    costs = turnover * (cost_bps / 10_000.0)           # bps to decimal
     net = gross - costs
 
     return pd.DataFrame(
@@ -121,7 +115,7 @@ def run_backtest(
 # Metrics
 # ----------------------------------------------------------------------------
 def cagr(returns: pd.Series) -> float:
-    """Compound annual growth rate from daily returns."""
+    """Yearly growth rate from daily returns."""
     total = (1.0 + returns).prod()
     years = len(returns) / TRADING_DAYS
     if years <= 0 or total <= 0:
@@ -130,15 +124,16 @@ def cagr(returns: pd.Series) -> float:
 
 
 def annual_vol(returns: pd.Series) -> float:
-    """Annualized volatility (std of daily returns scaled by sqrt(252))."""
+    """Yearly volatility, the daily standard deviation times sqrt(252)."""
     return returns.std() * np.sqrt(TRADING_DAYS)
 
 
 def sharpe(returns: pd.Series, rf_annual: float = 0.0) -> float:
     """
     Annualized Sharpe ratio: excess return per unit of volatility.
-    rf_annual: annual risk-free rate (0 keeps it simple; mention this
-    simplification in your writeup — with rf > 0 every Sharpe drops).
+    rf_annual is the yearly risk free rate. It defaults to 0, which keeps
+    things simple but means every Sharpe here is a bit higher than it would
+    be with cash earning interest.
     """
     rf_daily = rf_annual / TRADING_DAYS
     excess = returns - rf_daily
@@ -150,8 +145,8 @@ def sharpe(returns: pd.Series, rf_annual: float = 0.0) -> float:
 
 def max_drawdown(returns: pd.Series) -> float:
     """
-    Worst peak-to-trough loss of the equity curve. Returned as a negative
-    number (e.g. -0.55 means a 55% loss from the prior peak).
+    Worst drop from a peak, as a negative number (-0.55 means down 55%
+    from the previous high).
     """
     equity = (1.0 + returns).cumprod()
     peak = equity.cummax()
@@ -160,7 +155,7 @@ def max_drawdown(returns: pd.Series) -> float:
 
 
 def summarize(returns_df: pd.DataFrame) -> pd.DataFrame:
-    """Metrics table (rows = metrics, columns = strategies)."""
+    """Table of metrics, one column per strategy."""
     out = {}
     for col in returns_df.columns:
         r = returns_df[col]
@@ -174,7 +169,7 @@ def summarize(returns_df: pd.DataFrame) -> pd.DataFrame:
 
 
 # ----------------------------------------------------------------------------
-# Parameter search (in-sample ONLY — that's the whole point)
+# Parameter search, in sample only
 # ----------------------------------------------------------------------------
 def grid_search(
     prices: pd.Series,
@@ -183,9 +178,9 @@ def grid_search(
     cost_bps: float = 5.0,
 ) -> pd.DataFrame:
     """
-    Evaluate every (fast, slow) pair on `prices` and rank by Sharpe.
-    Call this with IN-SAMPLE prices only. The winner is then frozen and
-    judged once on out-of-sample data.
+    Run every (fast, slow) pair on `prices` and rank them by Sharpe.
+    Only pass in sample prices here. The winner gets frozen and tested once
+    on the out of sample years.
     """
     rows = []
     for f in fast_grid:
