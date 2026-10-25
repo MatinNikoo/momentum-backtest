@@ -1,0 +1,336 @@
+{
+ "name": "us_century_50_200",
+ "start": "1927-09",
+ "end": "2026-08",
+ "months": 1188,
+ "rule": {
+  "rule": "ma_crossover",
+  "fast": 50,
+  "slow": 200
+ },
+ "assets": [
+  "us"
+ ],
+ "weights": {
+  "us": 1.0
+ },
+ "execution": {
+  "delay": 1,
+  "cost_bps": 5
+ },
+ "w_vol_matched": 0.694366,
+ "metrics": {
+  "strategy": {
+   "cagr": 0.087429,
+   "vol": 0.127836,
+   "sharpe": 0.468317,
+   "max_dd": 0.615103,
+   "ulcer": 0.18541,
+   "worst_12m": -0.471771,
+   "cvar_5": -0.085909,
+   "skew": -0.749491,
+   "longest_underwater_months": 192,
+   "months": 1188
+  },
+  "benchmark": {
+   "cagr": 0.101038,
+   "vol": 0.184127,
+   "sharpe": 0.439863,
+   "max_dd": 0.83895,
+   "ulcer": 0.214634,
+   "worst_12m": -0.660704,
+   "cvar_5": -0.118199,
+   "skew": 0.12046,
+   "longest_underwater_months": 185,
+   "months": 1188
+  },
+  "vol_matched": {
+   "cagr": 0.083678,
+   "vol": 0.127836,
+   "sharpe": 0.439863,
+   "max_dd": 0.698034,
+   "ulcer": 0.13876,
+   "worst_12m": -0.511793,
+   "cvar_5": -0.081454,
+   "skew": 0.107686,
+   "longest_underwater_months": 164,
+   "months": 1188
+  }
+ },
+ "turnover": {
+  "switches_per_year_per_asset": 1.090932,
+  "avg_exposure": 0.720442
+ },
+ "sharpe_diff_vs_benchmark": {
+  "point": 0.028454,
+  "ci90": [
+   -0.110692,
+   0.155292
+  ]
+ },
+ "maxdd_vs_return_matched": {
+  "point": -0.117684,
+  "ci90": [
+   -0.439247,
+   0.196377
+  ],
+  "share_below_zero": 0.7
+ },
+ "regimes_vs_benchmark": {
+  "bear": {
+   "months": 152,
+   "mean_gap": 0.02145,
+   "ci": [
+    0.012601,
+    0.031028
+   ]
+  },
+  "recovery": {
+   "months": 361,
+   "mean_gap": -0.01087,
+   "ci": [
+    -0.016726,
+    -0.006025
+   ]
+  },
+  "crash_months": {
+   "months": 60,
+   "mean_gap": 0.069985,
+   "ci": [
+    0.048256,
+    0.086258
+   ]
+  },
+  "calm": {
+   "months": 396,
+   "mean_gap": -0.002747,
+   "ci": [
+    -0.003886,
+    -0.001464
+   ]
+  },
+  "all": {
+   "months": 1188,
+   "mean_gap": -0.001763,
+   "ci": [
+    -0.003514,
+    -3.1e-05
+   ]
+  }
+ },
+ "regimes_vs_volmatched": {
+  "bear": {
+   "months": 152,
+   "mean_gap": 0.010324,
+   "ci": [
+    0.002889,
+    0.018087
+   ]
+  },
+  "recovery": {
+   "months": 361,
+   "mean_gap": -0.005795,
+   "ci": [
+    -0.010591,
+    -0.00195
+   ]
+  },
+  "crash_months": {
+   "months": 60,
+   "mean_gap": 0.033459,
+   "ci": [
+    0.012815,
+    0.048518
+   ]
+  },
+  "calm": {
+   "months": 396,
+   "mean_gap": 0.002798,
+   "ci": [
+    0.001548,
+    0.004118
+   ]
+  },
+  "all": {
+   "months": 1188,
+   "mean_gap": 0.000303,
+   "ci": [
+    -0.001006,
+    0.001593
+   ]
+  }
+ },
+ "insurance_vs_volmatched": {
+  "premium_log_per_year": -0.014991,
+  "premium_ci": [
+   -0.033908,
+   0.002505
+  ],
+  "bear_gap_log_per_year": 0.129176,
+  "bear_gap_ci": [
+   0.032065,
+   0.227936
+  ],
+  "net_log_per_year": 0.003455,
+  "net_ci": [
+   -0.012092,
+   0.019039
+  ],
+  "premium_dollars_per_year": -1487.898199,
+  "premium_dollars_ci": [
+   -3333.954229,
+   250.769813
+  ],
+  "episodes": [
+   {
+    "peak": 24,
+    "trough": 58,
+    "months": 34,
+    "depth": 0.83895,
+    "payout_log": 0.583896,
+    "dollars_saved": 23946.251322
+   },
+   {
+    "peak": 225,
+    "trough": 237,
+    "months": 12,
+    "depth": 0.245069,
+    "payout_log": -0.050119,
+    "dollars_saved": -4036.344459
+   },
+   {
+    "peak": 412,
+    "trough": 418,
+    "months": 6,
+    "depth": 0.231576,
+    "payout_log": 0.053532,
+    "dollars_saved": 4609.338787
+   },
+   {
+    "peak": 495,
+    "trough": 514,
+    "months": 19,
+    "depth": 0.33422,
+    "payout_log": 0.171448,
+    "dollars_saved": 14632.982195
+   },
+   {
+    "peak": 544,
+    "trough": 565,
+    "months": 21,
+    "depth": 0.463575,
+    "payout_log": 0.284793,
+    "dollars_saved": 22396.135216
+   },
+   {
+    "peak": 720,
+    "trough": 723,
+    "months": 3,
+    "depth": 0.298414,
+    "payout_log": -0.043764,
+    "dollars_saved": -3390.189682
+   },
+   {
+    "peak": 871,
+    "trough": 901,
+    "months": 30,
+    "depth": 0.446508,
+    "payout_log": 0.197952,
+    "dollars_saved": 15109.244196
+   },
+   {
+    "peak": 962,
+    "trough": 978,
+    "months": 16,
+    "depth": 0.501719,
+    "payout_log": 0.416628,
+    "dollars_saved": 32387.349956
+   },
+   {
+    "peak": 1109,
+    "trough": 1111,
+    "months": 2,
+    "depth": 0.200967,
+    "payout_log": -0.072258,
+    "dollars_saved": -5987.406966
+   },
+   {
+    "peak": 1132,
+    "trough": 1141,
+    "months": 9,
+    "depth": 0.248995,
+    "payout_log": 0.094121,
+    "dollars_saved": 8140.040671
+   }
+  ],
+  "episodes_won": 7,
+  "n_episodes": 10,
+  "sign_test_p": 0.171875,
+  "mean_dollars_saved_per_episode": 10780.740124,
+  "mean_dollars_saved_ci": [
+   4582.148746,
+   17098.619826
+  ],
+  "bear_months": 152,
+  "normal_months": 1036
+ },
+ "smile": {
+  "beta": 0.493188,
+  "gamma": -0.388913,
+  "gamma_ci90": [
+   -0.66808,
+   0.240059
+  ],
+  "quarters": 395
+ },
+ "monte_carlo_10y": {
+  "strategy": {
+   "median_cagr": 0.089213,
+   "p5_end_wealth": 1.093389,
+   "p50_end_wealth": 2.350318,
+   "p95_end_wealth": 4.66325,
+   "prob_loss": 0.0358,
+   "median_max_dd": 0.219457,
+   "p95_max_dd": 0.473299
+  },
+  "benchmark": {
+   "median_cagr": 0.107078,
+   "p5_end_wealth": 0.87955,
+   "p50_end_wealth": 2.765563,
+   "p95_end_wealth": 6.558663,
+   "prob_loss": 0.0674,
+   "median_max_dd": 0.333864,
+   "p95_max_dd": 0.687278
+  },
+  "vol_matched": {
+   "median_cagr": 0.086725,
+   "p5_end_wealth": 1.053225,
+   "p50_end_wealth": 2.297183,
+   "p95_end_wealth": 4.197627,
+   "prob_loss": 0.0412,
+   "median_max_dd": 0.226712,
+   "p95_max_dd": 0.528775
+  }
+ },
+ "deflated_sharpe": {
+  "sr_per_period": 0.135191,
+  "sr0_per_period": 0.019966,
+  "dsr": 0.999904,
+  "psr_vs_zero": 0.999994
+ },
+ "pbo": {
+  "pbo": 0.316472,
+  "n_splits": 12870
+ },
+ "sweep_sharpes_annual": {
+  "fast=20,rule=ma_crossover,slow=150": 0.4407,
+  "fast=20,rule=ma_crossover,slow=200": 0.5561,
+  "fast=20,rule=ma_crossover,slow=250": 0.5461,
+  "fast=50,rule=ma_crossover,slow=150": 0.4178,
+  "fast=50,rule=ma_crossover,slow=200": 0.4683,
+  "fast=50,rule=ma_crossover,slow=250": 0.517,
+  "fast=100,rule=ma_crossover,slow=150": 0.4945,
+  "fast=100,rule=ma_crossover,slow=200": 0.501,
+  "fast=100,rule=ma_crossover,slow=250": 0.5039
+ }
+}

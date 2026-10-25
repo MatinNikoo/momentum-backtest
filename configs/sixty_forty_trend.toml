@@ -1,0 +1,12 @@
+# a 60/40 where both sleeves run the 10 month moving average rule
+name = "sixty_forty_trend"
+
+[data]
+assets = ["us", "ust10"]
+
+[rule]
+rule = "sma_month"
+months = 10
+
+[portfolio]
+weights = { us = 0.6, ust10 = 0.4 }

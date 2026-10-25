@@ -1,0 +1,17 @@
+# long or cash 12 month momentum with 10% vol targeting on four asset classes
+name = "multi_asset_tsmom"
+
+[data]
+assets = ["us", "dev_ex_us", "ust10", "gld"]
+
+[rule]
+rule = "tsmom"
+lookback = 12
+vol_target = 0.10
+
+[execution]
+delay = 1
+cost_bps = 5
+
+[portfolio]
+weights = { us = 0.4, dev_ex_us = 0.2, ust10 = 0.3, gld = 0.1 }

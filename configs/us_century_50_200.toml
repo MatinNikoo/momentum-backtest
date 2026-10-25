@@ -1,0 +1,20 @@
+# the primary rule on the whole US history, 1926 to the end of the data
+name = "us_century_50_200"
+
+[data]
+assets = ["us"]
+# same window as the study: the first month where all three protocol rules have a position
+eval_start = "1927-09-01"
+
+[rule]
+rule = "ma_crossover"
+fast = 50
+slow = 200
+
+[execution]
+delay = 1        # trade at the close after the signal close
+cost_bps = 5
+
+[report]
+n_boot = 1000
+sweep = { fast = [20, 50, 100], slow = [150, 200, 250] }

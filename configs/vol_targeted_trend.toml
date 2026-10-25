@@ -1,0 +1,19 @@
+# position sizing: the same 50/200 rule, scaled to 10% annual volatility and capped at 1.5x
+name = "vol_targeted_trend"
+
+[data]
+assets = ["us"]
+eval_start = "1927-09-01"
+
+[rule]
+rule = "ma_crossover"
+fast = 50
+slow = 200
+
+[sizing]
+vol_target = 0.10
+max_leverage = 1.5    # cash is borrowed at the T-bill rate above 1x
+# fraction = 0.5      # or hold a fixed share of whatever the rule says
+
+[report]
+sweep = { fast = [20, 50, 100], slow = [150, 200, 250] }

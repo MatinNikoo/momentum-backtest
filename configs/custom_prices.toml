@@ -1,0 +1,20 @@
+# your own prices: any csv with a date column and a price column, here the SPY file from the first study
+name = "custom_prices"
+
+[data]
+assets = ["mine"]
+cash = "tbill"        # or a flat annual rate like 0.03
+
+[data.files.mine]
+path = "../spy_prices.csv"
+# column = "Adj Close"   # only needed if the file has several price columns
+# kind = "returns"       # if the column already holds decimal returns
+
+[rule]
+rule = "ema_crossover"
+fast = 30
+slow = 150
+
+[execution]
+delay = 1
+cost_bps = 5

@@ -1,0 +1,315 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\usepackage{xcolor}
+\usepackage{caption}
+\usepackage[round]{natbib}
+\captionsetup{font=small,labelfont=bf}
+\graphicspath{{../figures/}}
+\newcommand{\fit}[1]{\resizebox{\textwidth}{!}{\input{tables/#1}}}
+\input{tables/numbers.tex}
+
+\title{Is Trend Following Worth It as Portfolio Protection?\\[0.3em]
+\large A precommitted test across a century of US stocks and five asset classes}
+\author{Matin Nikoomanzar\\ \small University of California, Los Angeles}
+\date{October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+\noindent Trend following rules usually lose to buy and hold on return, so they are often defended as protection. I test that defense directly. The question is whether a simple trend rule protects a portfolio more cheaply than the obvious alternative, which is to hold less of the risky asset and more T-bills. Before running anything I froze a protocol with one primary statistic, the worst drawdown of the 50/200 day moving average rule minus the worst drawdown of a static asset and T-bill mix that grew at the same long run rate. It is evaluated on data the rule had never been run on, US stocks from 1927 to 1999 and developed markets outside the US from 1991 to 2026, with execution one day after the signal, cash at the T-bill rate and trading costs. The point estimates favor trend in both markets (the rule's worst drawdown is \n{C1.deltapts} and \n{C2.deltapts} points shallower), but a block bootstrap puts the difference below zero in only \n{C1.share} and \n{C2.share} of resamples, short of the precommitted 90\% bar, so the verdict is \textbf{\n{verdict}}. Against buy and hold the rule behaves like real insurance. Over 1927 to 2026 it lost less in \n{US.bh.won} of \n{US.bh.neps} bear markets, by \n{US.bh.saved} on average per \$100{,}000 at the bottom, for a premium of \n{US.bh.cost} a year in normal times. Against the same volatility mix the premium and payout roughly cancel (net \n{US.mix.net} a year, 90\% CI \n{US.mix.netlo} to \n{US.mix.nethi}). The rule shows no convexity on stocks at a quarterly horizon, and across \n{snoop.C1.nrules} rules White's Reality Check and Hansen's SPA find no rule that beats its own same volatility mix ($p=\n{snoop.C1.rc}$ and $\n{snoop.C1.spa}$). On this evidence trend following moves your losses around more than it removes them.
+\end{abstract}
+
+\section{Introduction}
+
+The 50/200 day moving average crossover holds the stock market when the 50 day average is above the 200 day average and sits in cash otherwise. In my first study of it on SPY, it lost to buy and hold out of sample, and picking the best looking window pair from history was no better than picking at random (Appendix~\ref{app:spy}). That result is less informative than it looks. A rule that is out of the market about a quarter of the time should grow less money in a market that mostly goes up. So should a portfolio that is 70\% stocks and 30\% T-bills. Comparing either one to 100\% stocks mostly measures how much stock it holds.
+
+The defense of trend following is that it is protection. It gives up some return in calm markets in exchange for avoiding the worst of long bear markets \citep{hurst}. If that is the claim, the right benchmark is another way of buying protection. The simplest one is to own less of the asset. This paper asks:
+
+\begin{quote}
+\emph{Is trend following economically useful as portfolio protection even when it underperforms buy and hold in absolute returns?}
+\end{quote}
+
+I make the question concrete in three ways. First, a primary test that compares the worst drawdown of the trend rule to a static mix of the asset and T-bills with the same long run growth. Second, an insurance accounting of the premium paid in normal months and the payout in bear markets, in dollars. Third, a set of checks on whether any protection is convexity or luck. The protocol, the data and the verdict rule were fixed before any of the new data was used (Section~\ref{sec:protocol}).
+
+\section{Protocol}\label{sec:protocol}
+
+The protocol was written on 2026-10-20 and an addendum with secondary analyses later the same day, both before any trend rule was run on the new data. Their SHA-256 hashes (starting \texttt{\n{protocolhash}} and \texttt{\n{addendumhash}}) are stored in the repository and the study script refuses to run if either file changes. Everything I added or fixed afterward is logged in \texttt{docs/deviations.md} and the extras are labeled exploratory (Section~\ref{sec:limits}).
+
+\paragraph{What had been seen.} SPY from 2000 to 2026 was used to pick the 50/200 windows and was examined many times in the first study. Results on it, and on the US market after 1999, are labeled development and are context only.
+
+\paragraph{Untouched data.} The two primary samples are C1, the US stock market from 1926-07 to 1999-12, and C2, developed markets outside the US from 1990-07 to 2026-08. Secondary samples are C3, the US 10 year Treasury from 1962, C4, gold (GLD) from 2004, C5, broad commodities (DBC) from 2006, and Europe, Japan and Asia Pacific ex Japan from 1990.
+
+\paragraph{Verdict rule.} With $\Delta$ the primary statistic of Section~\ref{sec:primary}, the result is \emph{supported} if $\Delta<0$ in both C1 and C2 and in at least 90\% of bootstrap resamples in each; \emph{mixed} if $\Delta<0$ in both but the bar fails, or $\Delta<0$ in only one; and \emph{not supported} if $\Delta\ge 0$ in both.
+
+\section{Data}
+
+All series are daily total returns, except where noted. Table~\ref{tab:data} lists the sources.
+
+\begin{table}[H]
+\centering\small
+\resizebox{\textwidth}{!}{%
+\begin{tabular}{lll}
+\toprule
+Series & Source & Start \\
+\midrule
+US stock market & Ken French data library, \texttt{Mkt-RF + RF} (CRSP value weighted) & 1926-07-01 \\
+Developed ex US, Europe, Japan, Asia Pac.\ ex Japan & Ken French international files, USD & 1990-07-02 \\
+Emerging markets (monthly) & Ken French \texttt{Emerging\_5\_Factors} & 1989-07 \\
+T-bill return (cash) & Ken French \texttt{RF} (one month T-bill) & 1926-07-01 \\
+10 year Treasury & FRED \texttt{DGS10} yields through the bond model below & 1962-01-02 \\
+Long yield, monthly & Shiller to 1953-03, then FRED \texttt{GS10} & 1871 \\
+Gold, commodities & GLD and DBC adjusted closes (Yahoo) & 2004-11, 2006-02 \\
+Bond model check & IEF adjusted close, Damodaran annual T-bond returns & 2002-07, 1928 \\
+\bottomrule
+\end{tabular}}
+\caption{Data. Every sample ends on \n{dataend}, the last day of the T-bill series.}\label{tab:data}
+\end{table}
+
+\paragraph{Bond returns from yields.} Each day I hold a 10 year par bond bought at yesterday's yield $y_{t-1}$ and reprice it at today's yield with the maturity shortened by the elapsed time $\delta_t$ (calendar days over 365):
+\begin{equation}
+r^{B}_t = P\big(y_t;\, c=y_{t-1},\, M=10-\delta_t\big) - 1 + y_{t-1}\delta_t,\qquad
+P(y;c,M) = \frac{c}{y}\Big(1-(1+\tfrac{y}{2})^{-2M}\Big) + (1+\tfrac{y}{2})^{-2M}.
+\end{equation}
+The protocol set a pass bar of a monthly correlation of at least 0.95 with IEF and a CAGR gap within one point. Over \n{bond.iefmonths} months from \n{bond.iefstart} the correlation is \n{bond.corr} and the CAGR is \n{bond.cagrmodel} against \n{bond.cagrief} for IEF, so it passes. Annual returns correlate \n{bond.damcorr} with Damodaran's series over \n{bond.damyears} years (Figure~\ref{fig:bond}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.85\textwidth]{bond_model_check.png}
+\caption{Bond model against IEF (left) and Damodaran's annual returns (right).}\label{fig:bond}
+\end{figure}
+
+\paragraph{A data trap I avoided.} Free monthly gold prices (the World Bank series) are monthly averages. Averaging a random walk induces positive autocorrelation in its changes \citep{working}, which is exactly what a trend rule feeds on. In this repository's simulation the lag one autocorrelation of an averaged random walk is \n{gold.acrw}. On the averaged gold series it is \n{gold.acavg}, against \n{gold.acgld} for GLD month end returns over the same months (\n{gold.start} to \n{gold.end}). The 10 month rule beats holding gold on the averaged series (Sharpe \n{gold.avg.trend} against \n{gold.avg.bh}) and loses on GLD (\n{gold.gld.trend} against \n{gold.gld.bh}). I only use GLD.
+
+\section{Methods}
+
+\subsection{Timing, costs and cash}
+Let $s_t\in[0,1]$ be the signal computed from closes up to day $t$, and $d$ the delay in trading days between the signal close and the trade. The position that earns day $t$'s return is $w_t = s_{t-d-1}$, so with the baseline $d=1$ a signal from day $t$'s close is traded at day $t+1$'s close and first earns day $t+2$'s return. The daily strategy return is
+\begin{equation}
+r^{S}_t = w_t r_t + (1-w_t) r^{f}_t - \kappa\,|w_t-w_{t-1}|,
+\end{equation}
+with $r^f_t$ the T-bill return and $\kappa=5$ bps per unit of turnover. Daily returns are compounded into calendar months and every metric uses monthly returns.
+
+\subsection{Rules}
+The primary rule is $s_t=\mathbf{1}\{\mathrm{MA}_{50}(t)>\mathrm{MA}_{200}(t)\}$ on the total return index. Two standard alternatives are reported next to it and never used to pick a winner. They are the 10 month average rule of \citet{faber} and 12 month time series momentum \citep{mop}, which holds the asset when its past 12 month return beats the T-bill's. A volatility scaled version holds $\min(1, 0.10/\hat\sigma_t)$ of the asset, where $\hat\sigma_t$ is an exponentially weighted volatility with a 60 day center of mass.
+
+\subsection{Benchmarks}
+A static mix holds $w$ in the asset and $1-w$ in T-bills, rebalanced monthly, $r^{M}_t(w)=w r_t+(1-w)r^f_t$. The \emph{same volatility} mix solves $\mathrm{sd}(r^M(w))=\mathrm{sd}(r^S)$. The \emph{same growth} mix solves $\mathrm{CAGR}(r^M(w))=\mathrm{CAGR}(r^S)$ on the rising side of the growth curve. I also report the same exposure mix ($w$ equal to the share of days invested) and a 60/40 portfolio of stocks and the 10 year Treasury.
+
+\subsection{Primary statistic}\label{sec:primary}
+With $\mathrm{DD}(\cdot)$ the depth of the worst peak to trough fall,
+\begin{equation}
+\Delta = \mathrm{DD}(r^S) - \mathrm{DD}\big(r^M(w^{*})\big),\qquad \mathrm{CAGR}\big(r^M(w^*)\big)=\mathrm{CAGR}(r^S).
+\end{equation}
+$\Delta<0$ means trend reached the same growth with a shallower worst drawdown. Uncertainty comes from the stationary bootstrap \citep{politis} of the monthly returns of strategy, asset and T-bill together, mean block 12 months, \n{nboot} resamples, with $w^*$ solved again in each resample.
+
+\subsection{Insurance accounting}
+A bear market is a fall of buy and hold of at least 20\% (10\% for the Treasury series) from its running all time high down to the low, which is the definition the protocol fixed. Months when the market is still below an old high but rising count as recovery, so a second fall inside a long slump does not count as a new bear market. This matters in the US. The 1929 high was not regained until 1945, so the fall of 1937 to 1938, when buy and hold lost about half, and the fall of 1940 to 1942 are both labeled recovery. As a sensitivity check I also date bear markets the usual way, as a 20\% fall from a local peak that ends at the low before a 20\% rise, which gives \n{US.swbh.neps} US episodes instead of \n{US.bh.neps}. Let $g_t=\log(1+r^S_t)-\log(1+r^B_t)$ be the monthly log gap to a comparison $B$. The \emph{premium} is $12\,\overline{g}$ over normal months and the \emph{payout} of an episode is $\sum g_t$ from peak to trough. In dollars, the payout is what \$100{,}000 in the strategy was ahead of \$100{,}000 in the comparison at the trough. Intervals come from the same bootstrap and a sign test across episodes.
+
+\subsection{Convexity}
+On quarterly excess returns I fit the \citet{tm} regression $r^S_q=a+b\,r_q+\gamma\, r_q^2+e_q$, where $\gamma>0$ is the smile. Besides a block bootstrap over quarters, a placebo shifts the whole position series by a random offset of at least a year (wrapping around) and refits $\gamma$ 1{,}000 times. This keeps the time in the market and the switching pattern but breaks any link to future returns.
+
+\subsection{Data snooping}
+On C1 I run the family of all \n{snoop.C1.nrules} rules this project has touched, which are 89 moving average pairs, the two monthly rules, volatility scaled momentum and four breakout rules. For rule $k$ the loss differential is $d_{k,t}=r^{S_k}_t-r^{M_k}_t$ against its own same volatility mix, and I report White's Reality Check \citep{white} and the consistent SPA test of \citet{hansen} with the stationary bootstrap. I also report the deflated Sharpe ratio \citep{dsr} and the probability of backtest overfitting \citep{pbo}.
+
+\section{Results}
+
+\subsection{Primary test}
+
+\begin{table}[H]
+\centering\small
+\fit{primary.tex}
+\caption{Worst drawdown of the 50/200 rule minus that of the same growth static mix, in percentage points, with 90\% stationary bootstrap intervals. The Ulcer index columns are the exploratory whole path version. $^\dagger$Trend grew faster than every static mix, so the comparison is with the fastest growing one.}\label{tab:primary}
+\end{table}
+
+Table~\ref{tab:primary} and Figure~\ref{fig:primary} give the result. In C1 the rule's worst drawdown was \n{C1.trend_50_200.max_dd} against \n{C1.return_matched.max_dd} for a mix with \n{C1.wret} in stocks that grew at the same \n{C1.trend_50_200.cagr} a year, a worst drawdown \n{C1.deltapts} points shallower. In C2 it is \n{C2.deltapts} points shallower. Both have the sign the protection story predicts, but the intervals are wide and only \n{C1.share} and \n{C2.share} of resamples are below zero. By the precommitted rule the verdict is \textbf{\n{verdict}}.
+
+The test has little power, and that is part of the answer. Reading the bootstrap spread off the 90\% intervals, the rule would have needed a worst drawdown roughly \n{C1.neededpts} points shallower in C1 and \n{C2.neededpts} in C2 to clear the bar. A century of one market's history cannot separate a drawdown advantage of a few points from luck, because the worst drawdown is decided by one or two episodes.
+
+The exploratory whole path measure points the other way in C1. The Ulcer index, which counts every drawdown by its depth and length, is \n{C1.sec.ulcer.pts} points higher for trend than for the same growth mix in C1 and \n{C2.sec.ulcer.pts} higher in C2. Trend avoided the bottom of the worst fall but spent long stretches below its old peak (Figure~\ref{fig:century}).
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{primary_test.png}
+\caption{Primary statistic in every sample. Red are the two primary untouched samples, gray the samples seen before.}\label{fig:primary}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\fit{metrics_C1.tex}
+\caption{C1, US stocks \n{C1.start} to \n{C1.end}, monthly returns after costs. Sharpe is over T-bills.}\label{tab:c1}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\fit{metrics_C2.tex}
+\caption{C2, developed markets outside the US, \n{C2.start} to \n{C2.end}.}\label{tab:c2}
+\end{table}
+
+The two monthly rules did better than 50/200 on drawdown in both samples (Tables~\ref{tab:c1} and \ref{tab:c2}), for example 12 month momentum fell at most \n{C1.tsmom_12m.max_dd} in C1. They were never candidates for the primary rule, and picking them now because they look better would be the same mistake the first study warned about.
+
+\subsection{A century in one framework}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=0.92\textwidth]{century.png}
+\caption{US stocks from 1927 to 2026. The rule, buy and hold and the same volatility mix, all after costs with cash at T-bills. Gray bands are bear markets measured from the all time high. Hatched bands are the extra falls of 20\% or more from a local peak, mostly in the 1930s and early 1940s.}\label{fig:century}
+\end{figure}
+
+\begin{table}[H]
+\centering\small
+\fit{events.tex}
+\caption{Cumulative returns over named windows of US history, and over the window plus the next 12 months. Events after 1999 overlap the period I had already studied.}\label{tab:events}
+\end{table}
+
+Table~\ref{tab:events} shows the pattern behind the averages. In slow bear markets (1929 to 1932, 1973 to 1974, 2000 to 2002, 2008) the rule lost far less than buy and hold and less than the same volatility mix. In fast crashes (1987, 2020) the market fell before the averages crossed, so the rule took most or all of the fall and then missed the rebound. In the 12 months after the March 2020 low the rule returned \n{ev.2020covidcrash.trend_50_200.next12} against \n{ev.2020covidcrash.buy_and_hold.next12} for buy and hold. In the 1930s it was whipsawed by bear market rallies, which is why its worst drawdown is still \n{C1.trend_50_200.max_dd}.
+
+\subsection{Insurance in dollars}
+
+\begin{table}[H]
+\centering\small
+\fit{insurance.tex}
+\caption{Premium (dollars a year per \$100{,}000 given up in normal months, negative means a cost), bear market gap (log return a year during bear months), bear markets where trend was ahead, average dollars ahead at the bottom, and the net log gap over all months, with 90\% intervals.}\label{tab:insurance}
+\end{table}
+
+Against buy and hold the rule is insurance that pays. Over the whole US century it cost \n{US.bh.cost} a year per \$100{,}000 in normal months (90\% CI \n{US.bh.costlo} to \n{US.bh.costhi}) and was ahead in \n{US.bh.won} of \n{US.bh.neps} bear markets (sign test $p=\n{US.bh.signp}$), by \n{US.bh.saved} on average. Against the same volatility mix the cost falls to \n{US.mix.cost} a year (CI \n{US.mix.costlo} to \n{US.mix.costhi}) and the payout to \n{US.mix.saved} per bear market, won in \n{US.mix.won} of \n{US.mix.neps}. Net of both, the rule is \n{US.mix.net} a year ahead of the mix with an interval from \n{US.mix.netlo} to \n{US.mix.nethi}. The insurance mostly pays for itself relative to owning less stock, and no more than that.
+
+The all time high rule leaves out some falls, so Table~\ref{tab:swing} repeats the accounting with bear markets dated from local peaks (the episodes are in Table~\ref{tab:swingeps}). For US stocks that gives \n{US.swbh.neps} bear markets instead of \n{US.bh.neps}. The rule did better than buy and hold in \n{US.swbh.won} of them (sign test $p=\n{US.swbh.signp}$) and better than the same volatility mix in \n{US.swmix.won}. The net gap to the mix is \n{US.swmix.net} a year (CI \n{US.swmix.netlo} to \n{US.swmix.nethi}), so the conclusion does not change.
+
+\begin{table}[H]
+\centering\small
+\input{tables/insurance_swing.tex}
+\caption{Insurance accounting with bear markets dated from local peaks. Bears won is the number of falls where the rule did better than the comparison, and saved is the average dollars ahead at the bottom per \$100{,}000.}\label{tab:swing}
+\end{table}
+
+\begin{table}[H]
+\centering\small
+\input{tables/episodes_swing_us.tex}
+\caption{US falls of 20\% or more from a local peak, with the dollars the rule was ahead of buy and hold at the bottom per \$100{,}000.}\label{tab:swingeps}
+\end{table}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{insurance.png}
+\caption{Left, the payout in each US bear market. Right, the premium in normal months.}\label{fig:insurance}
+\end{figure}
+
+\subsection{Regimes}
+
+\begin{table}[H]
+\centering\small
+\input{tables/regimes.tex}
+\caption{Average gap between the rule and the same volatility mix inside each regime, annualized, with 90\% intervals. Regimes are labels on the months after the fact, never used for trading.}\label{tab:regimes}
+\end{table}
+
+The regime split (Table~\ref{tab:regimes}, Figure~\ref{fig:regimes}) shows where the money moves. Relative to the same volatility mix, the rule is ahead by \n{C1.reg.mix.bear.abs} a year in C1 bear months and falls behind it by \n{C1.reg.mix.recovery.abs} a year during recoveries. In C1 it also gained in calm months (\n{C1.reg.mix.calm}), when it is fully invested and the mix is not. The rate regimes show nothing clear in either sample. Recovery here means months after a bear market low while the market is still below its old high, so for the US it includes the falls of 1937 to 1938 and 1940 to 1942.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{regimes.png}
+\caption{Gap to the same volatility mix by regime.}\label{fig:regimes}
+\end{figure}
+
+\subsection{Convexity or luck}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{smile.png}
+\caption{Quarterly excess returns of the strategy against the asset, with the Treynor and Mazuy fit.}\label{fig:smile}
+\end{figure}
+
+The 50/200 rule on stocks has no smile (Figure~\ref{fig:smile}). In C1 the curvature is \n{C1.gamma} (90\% CI \n{C1.gammalo} to \n{C1.gammahi}) and the placebo gets one at least as large with probability \n{C1.placebop}. Dropping the single biggest quarter (1933 Q2) makes it \n{C1.gammadrop}. In C2 it is \n{C2.gamma}. The shape is a kinked line, with slope near one in rising quarters and a mix of zero and full losses in falling ones, because fast falls arrive before the signal does. The Treasury series (\n{C3.gamma}, placebo $p=\n{C3.placebop}$) and gold (\n{C4.gamma}, $p=\n{C4.placebop}$) show more curvature.
+
+The diversified long and short time series momentum portfolio of \citet{mop}, built from the seven daily markets with a 40\% volatility target per market, is closer to the textbook picture. From \n{tsmom.start} its correlation with US stocks is \n{tsmom.corr}, its curvature against them is \n{tsmom.gamma} (CI \n{tsmom.gammalo} to \n{tsmom.gammahi}), and it made money in \n{tsmom.worstwins} of the \n{tsmom.worstn} worst months for US stocks. It is also very volatile at that target (\n{tsmom.vol} a year, worst drawdown \n{tsmom.max_dd}), and it lost badly in October 1987.
+
+\subsection{Other asset classes and regions}
+
+\begin{table}[H]
+\centering\small
+\input{tables/overview.tex}
+\caption{Every sample, 50/200 rule against buy and hold and the same volatility mix.}\label{tab:overview}
+\end{table}
+
+The rule reduced the worst drawdown against buy and hold in every sample (Table~\ref{tab:overview}). Against the same growth mix the point estimate favors trend in Europe, Japan, Asia Pacific and commodities and goes against it for Treasuries (\n{C3.delta}) and gold (\n{C4.delta}). None of these clear the bootstrap. On emerging markets, where only monthly data exists and the trade happens at the signal close, the 10 month rule made \n{em.sma10m.trend.cagr} a year against \n{em.sma10m.buyandhold.cagr} with a worst drawdown of \n{em.sma10m.trend.maxdd} against \n{em.sma10m.buyandhold.maxdd}.
+
+\subsection{Execution}
+
+\begin{table}[H]
+\centering\small
+\fit{execution.tex}
+\caption{Sharpe ratio of the 50/200 rule by delay (days between the signal close and the trade) and cost per unit of turnover.}\label{tab:exec}
+\end{table}
+
+The rule switches about \n{C1.switches} times a year in C1 and is invested \n{C1.invested} of the time. Sharpe ratios barely move with execution (Table~\ref{tab:exec}). Trading at the signal close instead of the next one adds about 0.02 in C1, which is the size of the bug in my first version. A delay of 10 days costs 0.01 more there and 0.03 in C2.
+
+The drawdown comparison is much more fragile. At 50 bps instead of 5 the C1 difference shrinks from \n{C1.exec.d1.c5.delta} to \n{C1.exec.d1.c50.delta} and the C2 difference goes from \n{C2.exec.d1.c5.delta} to \n{C2.exec.d1.c50.delta}, which flips its sign (all in percentage points, negative meaning trend had the shallower drawdown). With a 2 day delay and 50 bps the C1 difference is \n{C1.exec.d2.c50.delta}. It is not smooth in the delay either. In C1 at 5 bps it is \n{C1.exec.d0.c5.delta}, \n{C1.exec.d1.c5.delta} and \n{C1.exec.d2.c5.delta} for delays of 0, 1 and 2 days, because a few days decide where the rule stands at the bottom of one crash. So the sign of the primary result depends on the cost assumption, and I would not lean on its size.
+
+\subsection{Data snooping}
+
+Across the \n{snoop.C1.nrules} rules on C1, \n{snoop.C1.sharepos} beat their own same volatility mix on average, the best (\n{snoop.C1.best}) by \n{snoop.C1.bestdiff} a year. The Reality Check gives $p=\n{snoop.C1.rc}$ and SPA $p=\n{snoop.C1.spa}$, so the best rule is consistent with luck. In C2 only \n{snoop.C2.sharepos} of rules beat their mix and the tests give $p=\n{snoop.C2.rc}$ and $\n{snoop.C2.spa}$. Against buy and hold none of the rules had a higher mean return in C1 (Reality Check $p=\n{snoop.C1.rcbh}$). The PBO of picking the best rule against its mix is \n{snoop.C1.pbo} in C1, so the ranking carries some information, but the winner's deflated Sharpe probability against its mix is only \n{snoop.C1.dsr}.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{snooping.png}
+\caption{Left, every rule's average return over its same volatility mix in C1. Right, the out of sample rank of the in sample best rule across 12{,}870 splits.}\label{fig:snooping}
+\end{figure}
+
+\subsection{What an investor should expect}
+
+A stationary bootstrap of the US 1927 to 2026 monthly history into \n{mc.paths} ten year paths (Figure~\ref{fig:mc}) puts the median ending wealth per dollar at \n{mc.bh.p50} for buy and hold, \n{mc.trend.p50} for the rule and \n{mc.mix.p50} for the same volatility mix. The rule ends ahead of buy and hold in \n{mc.trendbeatsbh} of paths and ahead of the mix in \n{mc.trendbeatsmix}. Its worst drawdown is smaller than the mix's in \n{mc.trendsmallerdd} of paths, which is a coin flip. Where it helps is the far tail. A fall of more than 30\% happens in \n{mc.trend.pdd30} of paths, against \n{mc.mix.pdd30} for the mix and \n{mc.bh.pdd30} for buy and hold. This assumes the future looks like a reshuffled past.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{monte_carlo.png}
+\caption{Monte Carlo of ten year outcomes.}\label{fig:mc}
+\end{figure}
+
+\section{Discussion}
+
+The answer depends on the benchmark, and the benchmark is the point. Against 100\% stocks, trend following is protection that works. It lost less in nearly every bear market of the last century and cost a few thousand dollars a year per \$100{,}000 in normal times. Against the cheapest alternative, holding less stock, it is roughly a wash. It moves losses out of bear markets and into recoveries, and the precommitted test cannot tell its worst drawdown apart from that of a static mix with the same growth.
+
+It helped most in slow bear markets where prices fell for many months, like 1929 to 1932, 1973 to 1974, 2000 to 2002 and 2008. It did badly in fast crashes that came before the averages crossed, in V shaped rebounds it sat out, and in sideways markets full of false signals. Someone who mostly fears a very deep, long bear market may still prefer trend, since the Monte Carlo shows a thinner tail of 30\% plus drawdowns. Someone who cares about time spent below a previous peak should not, because on the Ulcer index the static mix did better. The drawdown result also depends on the cost assumption, so I treat the sign of the primary test as unsettled.
+
+\section{Limits}\label{sec:limits}
+
+\begin{itemize}
+\item There are six bear markets in C1 and four in C2. Every statement about bear markets rests on a handful of episodes, and the samples share history. C2 overlaps the period I had already studied, and 2008 hit every stock market at once.
+\item The Ken French indexes were not tradeable before index funds. A 5 bps cost on the whole US market in the 1930s is generous, which is why costs up to 50 bps are reported.
+\item There are no taxes. Selling about once a year in a taxable account would cost more than the trading costs.
+\item The bond series is a model. Gold and commodities start in 2004 and 2006 and have only a few bear markets each.
+\item Several analyses were added after I saw early results and are exploratory. They are the Ulcer, CVaR and worst year versions of the primary comparison, the gold averaging check, the smile without its largest quarter, bear markets dated from local peaks, the snooping tests on C2 and against buy and hold, and the extra Monte Carlo probabilities. One protocol gap was filled after the fact. When trend grew faster than every static mix (commodities, Japan), it is compared with the fastest growing mix.
+\item The matching weights are chosen with the full sample, so the static mixes use hindsight about volatility and growth. So does the strategy's own CAGR. The comparison is between realized outcomes, not a strategy someone could have chosen in 1927.
+\item The block bootstrap of an extreme like the worst drawdown is only approximate, which is one reason the sign test across bear markets and the Ulcer index are reported next to it.
+\item Before 1953 the Ken French US file has Saturday sessions, so a year has about 300 rows and a 200 day average covers less calendar time than it does now. I left the data as it traded and divided switches by calendar years.
+\item The precommitment is self attested. The hashes sit in the same repository as the results, so nothing outside the repository proves when the protocol was written. Uploading it as its own earlier commit would make the timing checkable.
+\item Nobody independent has reviewed this yet. The code, data and tests are public so that someone can.
+\end{itemize}
+
+\section{Reproducibility}
+
+Everything runs offline from small data snapshots in the repository with \texttt{make all}, which runs 123 tests (including checks that no rule uses future data), the study, the notebook and this paper. Every number in the paper is written from the saved results by \texttt{paper\_numbers.py} and inserted as a macro, so none is typed by hand.
+
+\appendix
+\section{The first study and two bugs}\label{app:spy}
+
+The first study tested 50/200 on SPY from 2018 to 2026 after picking it on 2000 to 2017. Its code had two bugs. It shifted the signal by one day on close to close returns, which trades at the same close the signal came from, and it gave cash a 0\% return. Fixed, the out of sample CAGR of 50/200 goes from \n{spy.s0.cagr} to \n{spy.s1.cagr} with cash at T-bills and to \n{spy.s2.cagr} when trading at the next close, against \n{spy.s2.bhcagr} for SPY. Growth of a dollar is \n{spy.s2.growthof1} against \n{spy.s2.bhgrowthof1}. With the fixed engine the in sample search picks \n{spy.picked} instead of 50/200 and the probability of backtest overfitting across 89 pairs is \n{spy.pbo}. On the full SPY history from 2001 the rule's worst drawdown is \n{D1.trend_50_200.max_dd} against \n{D1.buy_and_hold.max_dd}, which is the development result that motivated this study and is not used as evidence.
+
+\small\begin{thebibliography}{99}
+\bibitem[Bailey and L\'opez de Prado(2014)]{dsr} Bailey, D.\ H.\ and L\'opez de Prado, M.\ (2014). The deflated Sharpe ratio. \emph{Journal of Portfolio Management} 40(5), 94 to 107.
+\bibitem[Bailey et al.(2017)]{pbo} Bailey, D.\ H., Borwein, J., L\'opez de Prado, M.\ and Zhu, Q.\ J.\ (2017). The probability of backtest overfitting. \emph{Journal of Computational Finance} 20(4).
+\bibitem[Faber(2007)]{faber} Faber, M.\ (2007). A quantitative approach to tactical asset allocation. \emph{Journal of Wealth Management} 9(4).
+\bibitem[Hansen(2005)]{hansen} Hansen, P.\ R.\ (2005). A test for superior predictive ability. \emph{Journal of Business and Economic Statistics} 23(4).
+\bibitem[Hurst et al.(2017)]{hurst} Hurst, B., Ooi, Y.\ H.\ and Pedersen, L.\ H.\ (2017). A century of evidence on trend-following investing. \emph{Journal of Portfolio Management} 44(1).
+\bibitem[Moskowitz et al.(2012)]{mop} Moskowitz, T.\ J., Ooi, Y.\ H.\ and Pedersen, L.\ H.\ (2012). Time series momentum. \emph{Journal of Financial Economics} 104(2).
+\bibitem[Politis and Romano(1994)]{politis} Politis, D.\ N.\ and Romano, J.\ P.\ (1994). The stationary bootstrap. \emph{Journal of the American Statistical Association} 89(428).
+\bibitem[Treynor and Mazuy(1966)]{tm} Treynor, J.\ and Mazuy, K.\ (1966). Can mutual funds outguess the market? \emph{Harvard Business Review} 44.
+\bibitem[White(2000)]{white} White, H.\ (2000). A reality check for data snooping. \emph{Econometrica} 68(5).
+\bibitem[Working(1960)]{working} Working, H.\ (1960). Note on the correlation of first differences of averages in a random chain. \emph{Econometrica} 28(4).
+\end{thebibliography}
+
+\end{document}

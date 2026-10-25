@@ -1,0 +1,14 @@
+# Donchian breakout on developed markets outside the US
+name = "dev_ex_us_breakout"
+
+[data]
+assets = ["dev_ex_us"]
+
+[rule]
+rule = "breakout"
+n_entry = 100
+n_exit = 50
+
+[execution]
+delay = 1
+cost_bps = 10
